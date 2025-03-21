@@ -1,16 +1,16 @@
 function New-AppLockerHashRule {
 $GUID = (New-GUID).GUID
-$UserPrompt = Read-Host "Please enter the path you'd like to create a rule for"
+$UserPrompt = Read-Host "Please enter the file path you'd like to create a rule for"
 $UserPromptTrimmed = $UserPrompt -replace "`"|'"
 $HashInfo = (Get-AppLockerFileInformation -Path $UserPromptTrimmed).Hash
 $Algorithm, $FileHash = $HashInfo -split '\s+', 2
 $FileLength = (Get-Item -Path $UserPromptTrimmed).Length
 $FileName = Split-Path -Path $UserPromptTrimmed -Leaf
     
-Write-Host "<FileHashRule Id="`"$GUID"`" Name="`"$FileName"`" Description="`"Test Description"`" UserOrGroupSid="`"S-1-1-0"`" Action="`"Allow"`">"
+Write-Host "<FileHashRule Id=`"$GUID`" Name=`"$FileName`" Description=`"Test Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
 Write-Host "    <Conditions>"
 Write-Host "        <FileHashCondition>"
-Write-Host "            <FileHash Type="`"$Algorithm"`" Data="`"$FileHash"`" SourceFileName="`"$FileName"`" SourceFileLength="`"$FileLength"`" />"
+Write-Host "            <FileHash Type=`"$Algorithm`" Data=`"$FileHash`" SourceFileName=`"$FileName`" SourceFileLength=`"$FileLength`" />"
 Write-Host "        </FileHashCondition>"
 Write-Host "    </Conditions>"
 Write-Host "</FileHashRule>"
