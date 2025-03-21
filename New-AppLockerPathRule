@@ -3,7 +3,7 @@ $GUID = (New-GUID).GUID
 $UserPrompt = Read-Host "Please enter the path you'd like to create a rule for"
 $UserPromptTrimmed = $UserPrompt -replace "`"|'"
 
-Write-Host "<FilePathRule Id="`"$GUID"`" Name="`"Test FilePath"`" Description="`"Test Description"`" UserOrGroupSid="`"S-1-1-0"`" Action="`"Allow"`">"
+Write-Host "<FilePathRule Id="`"$GUID"`" Name="`"$UserPromptTrimmed"`" Description="`"Test Description"`" UserOrGroupSid="`"S-1-1-0"`" Action="`"Allow"`">"
 Write-Host "    <Conditions>"
 Write-Host "        <FilePathCondition Path="`"$UserPromptTrimmed\*"`" />"
 Write-Host "    </Conditions>"
