@@ -1,0 +1,15 @@
+function New-AppLockerPublisherRule {
+$GUID = (New-GUID).GUID
+$UserPrompt = Read-Host "Please enter the path of the file to create a rule for"
+$UserPromptTrimmed = $UserPrompt -replace "`"|'"
+$Publisher = (Get-AppLockerFileInformation -Path $UserPromptTrimmed).Publisher
+$TrimmedPublisher = $Publisher -replace '\\.*$',''
+
+Write-Host "<FilePublisherRule Id="`"$GUID"`" Name="`"Test Publisher"`" Description="`"Test Description"`" UserOrGroupSid="`"S-1-1-0"`" Action="`"Allow"`">"
+Write-Host "  <Conditions>"
+Write-Host "      <FilePublisherCondition PublisherName="`"$TrimmedPublisher"`" ProductName="`"*"`" BinaryName="`"*"`">"
+Write-Host "          <BinaryVersionRange LowSection="`"*"`" HighSection="`"*"`" />"
+Write-Host "      </FilePublisherCondition>"
+Write-Host "  </Conditions>"
+Write-Host "</FilePublisherRule>"
+}
