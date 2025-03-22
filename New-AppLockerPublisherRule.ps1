@@ -45,4 +45,8 @@ function New-AppLockerPublisherRule {
 "@
         $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Append -Force
     }
+    
+    if ($Output -eq "XML") {
+        Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
+        }
 }
