@@ -52,8 +52,8 @@ $FileName = Split-Path -Path $FilePathTrimmed -Leaf
 </FileHashRule>
 "@
 
-        if ((Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") -and ($Intent -eq "Clear")) {
-            Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force 
+        if ($Intent -eq "Clear") {
+            Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force -ErrorAction SilentlyContinue
             $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Force
         }
         if ($Intent -eq "Append") {
