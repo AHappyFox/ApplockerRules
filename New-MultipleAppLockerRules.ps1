@@ -1,4 +1,4 @@
-function Create-MultipleAppLockerRules {
+function New-MultipleAppLockerRules {
     param (
         [Parameter(Mandatory=$True)]
         [string] $FilePath,
@@ -18,7 +18,7 @@ function Create-MultipleAppLockerRules {
 
     foreach ($File in $Files) {
         $IsSigned = (Get-AppLockerFileInformation -Path $File).Publisher
-        if (($IsSigned) -eq $null) {
+        if ($null -eq ($IsSigned)) {
             New-AppLockerHashRule -FilePath $File -Description $Description -OutPut $Output
         }
         else {
