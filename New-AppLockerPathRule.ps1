@@ -35,11 +35,6 @@ $FilePathTrimmed = $FilePath -replace "`"|'"
             New-Item -ItemType Directory -Path $FolderPath -Force | Out-Null
         }
 
-        if (Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") {
-            #Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force 
-            #This didn't work as expected when creating rules in bulk :)
-        }
-        
         $XML = @"
 <FilePathRule Id="$GUID" Name="$FilePathTrimmed" Description="$Description" UserOrGroupSid="S-1-1-0" Action="Allow">
   <Conditions>
