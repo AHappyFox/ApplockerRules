@@ -19,11 +19,9 @@ function Create-MultipleAppLockerRules {
     foreach ($File in $Files) {
         $IsSigned = (Get-AppLockerFileInformation -Path $File).Publisher
         if (($IsSigned) -eq $null) {
-            #Write-Host "$File is not signed"
             New-AppLockerHashRule -FilePath $File -Description $Description -OutPut $Output
         }
         else {
-            #Write-Host "$File is signed with ($IsSigned)"
             New-AppLockerPublisherRule -FilePath $File -Description $Description -OutPut $Output
         }
     }
