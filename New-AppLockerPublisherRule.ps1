@@ -34,7 +34,8 @@ function New-AppLockerPublisherRule {
         }
 
         if (Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") {
-            Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force
+            #Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force 
+            #This didn't work as expected when creating rules in bulk :)
         }
         
         $XML = @"
