@@ -1,7 +1,14 @@
 function New-AppLockerHashRule {
     param (
         [Parameter(Mandatory=$True)]
-        [string] $FilePath
+        [string] $FilePath,
+
+        [Parameter(Mandatory=$False)]
+        [string] $Description,
+
+        [ValidateSet ("XML", "Shell")]
+        [Parameter(Mandatory=$True)]
+        [string] $Output
     )
 
 $GUID = (New-GUID).GUID
@@ -10,12 +17,35 @@ $HashInfo = (Get-AppLockerFileInformation -Path $FilePathTrimmed).Hash
 $Algorithm, $FileHash = $HashInfo -split '\s+', 2
 $FileLength = (Get-Item -Path $FilePathTrimmed).Length
 $FileName = Split-Path -Path $FilePathTrimmed -Leaf
+
+    if ($Output -eq "Shell") {
+    Write-Host "<FileHashRule Id=`"$GUID`" Name=`"$FileName`" Description=`"$Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
+    Write-Host "    <Conditions>"
+    Write-Host "        <FileHashCondition>"
+    Write-Host "            <FileHash Type=`"$Algorithm`" Data=`"$FileHash`" SourceFileName=`"$FileName`" SourceFileLength=`"$FileLength`" />"
+    Write-Host "        </FileHashCondition>"
+    Write-Host "    </Conditions>"
+    Write-Host "</FileHashRule>"
+    }
+    if ($Output -eq "XML"){
+        $FilePath = "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml"
+        $FolderPath = Split-Path -Parent $FilePath
     
-Write-Host "<FileHashRule Id=`"$GUID`" Name=`"$FileName`" Description=`"Test Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
-Write-Host "    <Conditions>"
-Write-Host "        <FileHashCondition>"
-Write-Host "            <FileHash Type=`"$Algorithm`" Data=`"$FileHash`" SourceFileName=`"$FileName`" SourceFileLength=`"$FileLength`" />"
-Write-Host "        </FileHashCondition>"
-Write-Host "    </Conditions>"
-Write-Host "</FileHashRule>"
+        # Ensure the folder exists before writing
+        if (!(Test-Path -Path $FolderPath)) {
+            New-Item -ItemType Directory -Path $FolderPath -Force | Out-Null
+        }
+
+        $XML = @"
+<FileHashRule Id="$GUID" Name="$FileName" Description="$Description" UserOrGroupSid="S-1-1-0" Action="Allow">
+  <Conditions>
+      <FileHashCondition>
+          <BinaryVersionRange LowSection="*" HighSection="*" />
+            <FileHash Type="$Algorithm" Data="$FileHash" SourceFileName="$FileName" SourceFileLength="$FileLength" />
+      </FileHashCondition>
+  </Conditions>
+</FileHashRule>
+"@
+    $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Append -Force
+    }
 }
