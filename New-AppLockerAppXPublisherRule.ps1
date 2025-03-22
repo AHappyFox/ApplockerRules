@@ -8,7 +8,13 @@ function New-AppLockerAppXPublisherRule {
 
         [ValidateSet ("XML", "Shell")]
         [Parameter(Mandatory=$True)]
-        [string] $Output
+        [string] $Output,
+        
+        [ValidateScript ({
+            if ($Output -eq "XML") {return $True}
+            else {throw "Intent is only valid when Output is XML"}
+        })]
+        [String] $Intent = "Append"
     )
 
 $GUID = (New-GUID).GUID
@@ -31,11 +37,6 @@ $TrimmedPublisher = $Publisher -replace '\\.*$',''
         if (!(Test-Path -Path $FolderPath)) {
             New-Item -ItemType Directory -Path $FolderPath -Force | Out-Null
         }
-
-        if (Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") {
-            #Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force 
-            #This didn't work as expected when creating rules in bulk :)
-        }
         
         $XML = @"
 <FilePublisherRule Id="$GUID" Name="Signed by $TrimmedPublisher" Description="$Description" UserOrGroupSid="S-1-1-0" Action="Allow">
@@ -46,10 +47,15 @@ $TrimmedPublisher = $Publisher -replace '\\.*$',''
   </Conditions>
 </FilePublisherRule>
 "@
-    $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Append -Force
-    }
 
-    if ($Output -eq "XML") {
-        Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
+        if ((Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") -and ($Intent -eq "Clear")) {
+            Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force 
+            $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Force
         }
+        if ($Intent -eq "Append") {
+            $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Append -Force
+        }
+
+    }
+    Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
 }

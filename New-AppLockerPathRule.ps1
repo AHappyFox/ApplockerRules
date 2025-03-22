@@ -8,7 +8,13 @@ function New-AppLockerPathRule {
 
         [ValidateSet ("XML", "Shell")]
         [Parameter(Mandatory=$True)]
-        [string] $Output
+        [string] $Output,
+        
+        [ValidateScript ({
+            if ($Output -eq "XML") {return $True}
+            else {throw "Intent is only valid when Output is XML"}
+        })]
+        [String] $Intent = "Append"
     )
 
 $GUID = (New-GUID).GUID
@@ -41,10 +47,15 @@ $FilePathTrimmed = $FilePath -replace "`"|'"
   </Conditions>
 </FilePathRule>
 "@
-    $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Append -Force
-    }
 
-    if ($Output -eq "XML") {
-        Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
+        if ((Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") -and ($Intent -eq "Clear")) {
+            Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force 
+            $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Force
         }
+        if ($Intent -eq "Append") {
+            $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Append -Force
+        }
+
+    }
+Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
 }
