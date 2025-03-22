@@ -8,7 +8,10 @@ function New-MultipleAppLockerRules {
 
         [ValidateSet ("XML", "Shell")]
         [Parameter(Mandatory=$True)]
-        [string] $Output
+        [string] $Output,
+
+        [Parameter(Mandatory=$False)]
+        [switch] $SuppressMessage
     )
 
     $Files = (Get-ChildItem -Path $FilePath).FullName
@@ -19,10 +22,10 @@ function New-MultipleAppLockerRules {
     foreach ($File in $Files) {
         $IsSigned = (Get-AppLockerFileInformation -Path $File).Publisher
         if ($null -eq ($IsSigned)) {
-            New-AppLockerHashRule -FilePath $File -Description $Description -OutPut $Output
+            New-AppLockerHashRule -FilePath $File -Description $Description -OutPut $Output -SuppressMessage
         }
         else {
-            New-AppLockerPublisherRule -FilePath $File -Description $Description -OutPut $Output
+            New-AppLockerPublisherRule -FilePath $File -Description $Description -OutPut $Output -SuppressMessage
         }
     }
 

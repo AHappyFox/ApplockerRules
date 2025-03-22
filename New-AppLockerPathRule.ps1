@@ -14,7 +14,10 @@ function New-AppLockerPathRule {
             if ($Output -eq "XML") {return $True}
             else {throw "Intent is only valid when Output is XML"}
         })]
-        [String] $Intent = "Append"
+        [String] $Intent = "Append",
+
+        [Parameter(Mandatory=$False)]
+        [switch] $SuppressMessage
     )
 
 $GUID = (New-GUID).GUID
@@ -52,5 +55,8 @@ $FilePathTrimmed = $FilePath -replace "`"|'"
         }
 
     }
-Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
+
+    if (-not $SuppressMessage) {
+        Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
+    }
 }
