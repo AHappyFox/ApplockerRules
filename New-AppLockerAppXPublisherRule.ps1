@@ -28,9 +28,12 @@ $TrimmedPublisher = $Publisher -replace '\\.*$',''
         $FilePath = "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml"
         $FolderPath = Split-Path -Parent $FilePath
     
-        # Ensure the folder exists before writing
         if (!(Test-Path -Path $FolderPath)) {
             New-Item -ItemType Directory -Path $FolderPath -Force | Out-Null
+        }
+
+        if (Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") {
+            Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force
         }
         
         $XML = @"
