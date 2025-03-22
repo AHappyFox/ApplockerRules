@@ -53,13 +53,13 @@ $TrimmedPublisher = $Publisher -replace '\\.*$',''
             Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force  -ErrorAction SilentlyContinue
             $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Force
         }
+        
         if ($Intent -eq "Append") {
             $XML | Out-File -FilePath "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Encoding UTF8 -Append -Force
         }
 
-    }
-
-    if (-not $SuppressMessage) {
-        Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
+        if (-not $SuppressMessage) {
+            Write-Host "The XML file can be located here: '$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml'"
+        }
     }
 }
