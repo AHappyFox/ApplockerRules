@@ -10,15 +10,14 @@ function New-AppLockerPublisherRule {
         [Parameter(Mandatory=$True)]
         [string] $Output,
 
-        [ValidateScript ({
-            if ($Output -eq "XML") {return $True}
-            else {throw "Intent is only valid when Output is XML"}
-        })]
+        [ValidateSet ("Append", "Clear")]
+        [Parameter(Mandatory=$False)]
         [String] $Intent = "Append",
 
         [Parameter(Mandatory=$False)]
         [switch] $SuppressMessage
     )
+
 
     $GUID = (New-GUID).GUID
     $FilePathTrimmed = $FilePath -replace "`"|'"
