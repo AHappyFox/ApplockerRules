@@ -18,8 +18,8 @@ function New-AppLockerPathRule {
         [switch] $SuppressMessage
     )
 
-$GUID = (New-GUID).GUID
-$FilePathTrimmed = $FilePath -replace "`"|'"
+    $GUID = (New-GUID).GUID
+    $FilePathTrimmed = $FilePath -replace "`"|'"
 
     if ($Output -eq "Shell") {
     Write-Host "<FilePathRule Id=`"$GUID`" Name=`"$FilePathTrimmed`" Description=`"$Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"

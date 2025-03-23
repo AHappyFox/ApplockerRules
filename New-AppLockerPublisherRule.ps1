@@ -41,8 +41,6 @@ function New-AppLockerPublisherRule {
             New-Item -ItemType Directory -Path $FolderPath -Force | Out-Null
         }
 
-
-        
         $XML = @"
 <FilePublisherRule Id="$GUID" Name="Signed by $TrimmedPublisher" Description="$Description" UserOrGroupSid="S-1-1-0" Action="Allow">
   <Conditions>
