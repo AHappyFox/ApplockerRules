@@ -3,8 +3,8 @@ function New-AppLockerHashRule {
         [Parameter(Mandatory=$True)]
         [string] $FilePath,
 
-        [Parameter(Mandatory=$False)]
-        [string] $Description,
+        [Parameter(Mandatory=$True)]
+        [string] $TicketNumber,
 
         [ValidateSet ("XML", "Shell")]
         [Parameter(Mandatory=$True)]
@@ -18,15 +18,16 @@ function New-AppLockerHashRule {
         [switch] $SuppressMessage
     )
 
-$GUID = (New-GUID).GUID
-$FilePathTrimmed = $FilePath -replace "`"|'"
-$HashInfo = (Get-AppLockerFileInformation -Path $FilePathTrimmed).Hash
-$Algorithm, $FileHash = $HashInfo -split '\s+', 2
-$FileLength = (Get-Item -Path $FilePathTrimmed).Length
-$FileName = Split-Path -Path $FilePathTrimmed -Leaf
+    $GUID = (New-GUID).GUID
+    $User = (whoami) -replace "^.*\\","" -replace "[a-z]$"
+    $FilePathTrimmed = $FilePath -replace "`"|'"
+    $HashInfo = (Get-AppLockerFileInformation -Path $FilePathTrimmed).Hash
+    $Algorithm, $FileHash = $HashInfo -split '\s+', 2
+    $FileLength = (Get-Item -Path $FilePathTrimmed).Length
+    $FileName = Split-Path -Path $FilePathTrimmed -Leaf
 
     if ($Output -eq "Shell") {
-    Write-Host "<FileHashRule Id=`"$GUID`" Name=`"$FileName`" Description=`"$Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
+    Write-Host "<FileHashRule Id=`"$GUID`" Name=`"$FileName`" Description=`"InTicket: $TicketNumber - $User`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
     Write-Host "    <Conditions>"
     Write-Host "        <FileHashCondition>"
     Write-Host "            <FileHash Type=`"$Algorithm`" Data=`"$FileHash`" SourceFileName=`"$FileName`" SourceFileLength=`"$FileLength`" />"
@@ -43,7 +44,7 @@ $FileName = Split-Path -Path $FilePathTrimmed -Leaf
         }
 
         $XML = @"
-<FileHashRule Id="$GUID" Name="$FileName" Description="$Description" UserOrGroupSid="S-1-1-0" Action="Allow">
+<FileHashRule Id="$GUID" Name="$FileName" Description="InTicket: $TicketNumber - $User" UserOrGroupSid="S-1-1-0" Action="Allow">
   <Conditions>
       <FileHashCondition>
           <BinaryVersionRange LowSection="*" HighSection="*" />
