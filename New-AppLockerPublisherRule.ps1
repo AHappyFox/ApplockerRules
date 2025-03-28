@@ -18,7 +18,7 @@ function New-AppLockerPublisherRule {
         [switch] $SuppressMessage
     )
 
-    ##bare en test
+
     $GUID = (New-GUID).GUID
     $User = (whoami) -replace "^.*\\","" -replace "[a-z]$"
     $FilePathTrimmed = $FilePath -replace "`"|'"
