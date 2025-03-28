@@ -18,6 +18,7 @@ function New-AppLockerAppXPublisherRule {
         [switch] $SuppressMessage
     )
 
+    ##Bare en test
     $GUID = (New-GUID).GUID
     $User = (whoami) -replace "^.*\\","" -replace "[a-z]$"
     $Publisher = (Get-AppxPackage -Name *$AppXName*).Publisher
