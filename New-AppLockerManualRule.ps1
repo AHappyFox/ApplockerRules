@@ -7,14 +7,15 @@ function New-AppLockerManualRule {
         [Parameter (Mandatory=$True)]
         [string] $InputData,
 
-        [Parameter(Mandatory=$False)]
-        [string] $Description
+        [Parameter(Mandatory=$True)]
+        [string] $TicketNumber
     )
 
     $GUID = (New-GUID).GUID
+    $User = (whoami) -replace "^.*\\","" -replace "[a-z]$"
 
     if ($RuleType -eq "Publisher") {
-        Write-Host "<FilePublisherRule Id=`"$GUID`" Name=`"Signed by $InputData`" Description=`"$Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
+        Write-Host "<FilePublisherRule Id=`"$GUID`" Name=`"Signed by $InputData`" Description=`"InTicket: $TicketNumber - $User`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
         Write-Host "  <Conditions>"
         Write-Host "      <FilePublisherCondition PublisherName=`"$InputData`" ProductName=`"*`" BinaryName=`"*`">"
         Write-Host "          <BinaryVersionRange LowSection=`"*`" HighSection=`"*`" />"

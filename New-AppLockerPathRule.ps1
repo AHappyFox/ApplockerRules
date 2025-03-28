@@ -3,8 +3,8 @@ function New-AppLockerPathRule {
         [Parameter(Mandatory=$True)]
         [string] $FilePath,
 
-        [Parameter(Mandatory=$False)]
-        [string] $Description,
+        [Parameter(Mandatory=$True)]
+        [string] $TicketNumber,
 
         [ValidateSet ("XML", "Shell")]
         [Parameter(Mandatory=$True)]
@@ -19,10 +19,11 @@ function New-AppLockerPathRule {
     )
 
     $GUID = (New-GUID).GUID
+    $User = (whoami) -replace "^.*\\","" -replace "[a-z]$"
     $FilePathTrimmed = $FilePath -replace "`"|'"
 
     if ($Output -eq "Shell") {
-    Write-Host "<FilePathRule Id=`"$GUID`" Name=`"$FilePathTrimmed`" Description=`"$Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
+    Write-Host "<FilePathRule Id=`"$GUID`" Name=`"$FilePathTrimmed`" Description=`"InTicket: $TicketNumber - $User`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
     Write-Host "    <Conditions>"
     Write-Host "        <FilePathCondition Path=`"$FilePathTrimmed`" />"
     Write-Host "    </Conditions>"
@@ -37,7 +38,7 @@ function New-AppLockerPathRule {
         }
 
         $XML = @"
-<FilePathRule Id="$GUID" Name="$FilePathTrimmed" Description="$Description" UserOrGroupSid="S-1-1-0" Action="Allow">
+<FilePathRule Id="$GUID" Name="$FilePathTrimmed" Description="InTicket: $TicketNumber - $User" UserOrGroupSid="S-1-1-0" Action="Allow">
   <Conditions>
         <FilePathCondition Path="$FilePathTrimmed" />
   </Conditions>

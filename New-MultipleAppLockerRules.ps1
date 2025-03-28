@@ -3,8 +3,8 @@ function New-MultipleAppLockerRules {
         [Parameter(Mandatory=$True)]
         [string] $FilePath,
 
-        [Parameter(Mandatory=$False)]
-        [string] $Description,
+        [Parameter(Mandatory=$True)]
+        [string] $TicketNumber,
 
         [ValidateSet ("XML", "Shell")]
         [Parameter(Mandatory=$True)]
@@ -15,6 +15,8 @@ function New-MultipleAppLockerRules {
     )
 
     $Files = (Get-ChildItem -Path $FilePath).FullName
+    $User = (whoami) -replace "^.*\\","" -replace "[a-z]$"
+
     if (Test-Path -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml") {
         Remove-Item -Path "$env:USERPROFILE\Documents\AppLocker\AppLockerRules.xml" -Force
     }
@@ -22,10 +24,10 @@ function New-MultipleAppLockerRules {
     foreach ($File in $Files) {
         $IsSigned = (Get-AppLockerFileInformation -Path $File).Publisher
         if ($null -eq ($IsSigned)) {
-            New-AppLockerHashRule -FilePath $File -Description $Description -OutPut $Output -SuppressMessage
+            New-AppLockerHashRule -FilePath $File -TicketNumber $TicketNumber -OutPut $Output -SuppressMessage
         }
         else {
-            New-AppLockerPublisherRule -FilePath $File -Description $Description -OutPut $Output -SuppressMessage
+            New-AppLockerPublisherRule -FilePath $File -TicketNumber $TicketNumber -OutPut $Output -SuppressMessage
         }
     }
 

@@ -3,8 +3,8 @@ function New-AppLockerAppXPublisherRule {
         [Parameter(Mandatory=$True)]
         [string] $AppXName,
 
-        [Parameter(Mandatory=$False)]
-        [string] $Description,
+        [Parameter(Mandatory=$True)]
+        [string] $TicketNumber,
 
         [ValidateSet ("XML", "Shell")]
         [Parameter(Mandatory=$True)]
@@ -18,12 +18,13 @@ function New-AppLockerAppXPublisherRule {
         [switch] $SuppressMessage
     )
 
-$GUID = (New-GUID).GUID
-$Publisher = (Get-AppxPackage -Name *$AppXName*).Publisher
-$TrimmedPublisher = $Publisher -replace '\\.*$',''
+    $GUID = (New-GUID).GUID
+    $User = (whoami) -replace "^.*\\","" -replace "[a-z]$"
+    $Publisher = (Get-AppxPackage -Name *$AppXName*).Publisher
+    $TrimmedPublisher = $Publisher -replace '\\.*$',''
 
     if ($Output -eq "Shell") {
-    Write-Host "<FilePublisherRule Id=`"$GUID`" Name=`"Signed by $TrimmedPublisher`" Description=`"$Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
+    Write-Host "<FilePublisherRule Id=`"$GUID`" Name=`"Signed by $TrimmedPublisher`" Description=`"InTicket: $TicketNumber - $User`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
     Write-Host "  <Conditions>"
     Write-Host "      <FilePublisherCondition PublisherName=`"$TrimmedPublisher`" ProductName=`"*`" BinaryName=`"*`">"
     Write-Host "          <BinaryVersionRange LowSection=`"*`" HighSection=`"*`" />"
@@ -40,7 +41,7 @@ $TrimmedPublisher = $Publisher -replace '\\.*$',''
         }
         
         $XML = @"
-<FilePublisherRule Id="$GUID" Name="Signed by $TrimmedPublisher" Description="$Description" UserOrGroupSid="S-1-1-0" Action="Allow">
+<FilePublisherRule Id="$GUID" Name="Signed by $TrimmedPublisher" Description="InTicket: $TicketNumber - $User" UserOrGroupSid="S-1-1-0" Action="Allow">
   <Conditions>
       <FilePublisherCondition PublisherName="$TrimmedPublisher" ProductName="*" BinaryName="*">
           <BinaryVersionRange LowSection="*" HighSection="*" />
