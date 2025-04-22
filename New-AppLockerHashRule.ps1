@@ -47,7 +47,6 @@ function New-AppLockerHashRule {
 <FileHashRule Id="$GUID" Name="$FileName" Description="InTicket: $TicketNumber - $User" UserOrGroupSid="S-1-1-0" Action="Allow">
   <Conditions>
       <FileHashCondition>
-          <BinaryVersionRange LowSection="*" HighSection="*" />
             <FileHash Type="$Algorithm" Data="$FileHash" SourceFileName="$FileName" SourceFileLength="$FileLength" />
       </FileHashCondition>
   </Conditions>
