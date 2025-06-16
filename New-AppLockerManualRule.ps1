@@ -25,7 +25,7 @@ function New-AppLockerManualRule {
     }
 
     if ($RuleType -eq "Path") {
-        Write-Host "<FilePathRule Id=`"$GUID`" Name=`"$InputData`" Description=`"$Description`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
+        Write-Host "<FilePathRule Id=`"$GUID`" Name=`"$InputData`" Description=`"InTicket: $TicketNumber - $User`" UserOrGroupSid=`"S-1-1-0`" Action=`"Allow`">"
         Write-Host "    <Conditions>"
         Write-Host "        <FilePathCondition Path=`"$InputData`" />"
         Write-Host "    </Conditions>"
